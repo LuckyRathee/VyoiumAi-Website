@@ -1,0 +1,14 @@
+import http from 'node:http';
+import {readFile,stat} from 'node:fs/promises';
+import {watch} from 'node:fs';
+import path from 'node:path';
+import {spawnSync,spawn} from 'node:child_process';
+const root=process.cwd();
+const build=()=>{const r=spawnSync(process.execPath,['scripts/build.mjs'],{stdio:'inherit',cwd:root});if(r.status===0)clients.forEach(res=>res.write('data: reload\n\n'));};
+const clients=new Set();let timer;
+let backend=spawn(process.execPath,['server.mjs'],{cwd:root,env:{...process.env,PORT:'4322',SITE_URL:'http://localhost:4321'},stdio:'inherit'});
+const server=http.createServer(async(req,res)=>{if(req.url==='/__reload'){res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache','Connection':'keep-alive'});res.write(': connected\n\n');clients.add(res);req.on('close',()=>clients.delete(res));return;}if(req.url==='/api/enquiry'){const proxy=http.request({hostname:'127.0.0.1',port:4322,path:req.url,method:req.method,headers:req.headers},up=>{res.writeHead(up.statusCode,up.headers);up.pipe(res);});proxy.on('error',()=>{res.writeHead(503,{'Content-Type':'application/json'});res.end(JSON.stringify({ok:false,message:'Backend is restarting. Your enquiry was not sent. Please try again.'}));});req.pipe(proxy);return;}try{let pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);let file=path.resolve('dist','.'+pathname);if(!file.startsWith(path.resolve('dist')+path.sep)&&file!==path.resolve('dist'))throw Error();if((await stat(file)).isDirectory())file=path.join(file,'index.html');const data=await readFile(file);const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.xml':'application/xml','.txt':'text/plain; charset=utf-8'};res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'});res.end(data);}catch{res.writeHead(404,{'Content-Type':'text/html'});res.end('<h1>Page not found</h1><a href="/">Home</a>');}});
+for(const dir of ['src','public','scripts'])watch(dir,{recursive:true},()=>{clearTimeout(timer);timer=setTimeout(build,200);});
+watch('server.mjs',()=>{backend.kill();backend=spawn(process.execPath,['server.mjs'],{cwd:root,env:{...process.env,PORT:'4322',SITE_URL:'http://localhost:4321'},stdio:'inherit'});});
+server.listen(4321,'127.0.0.1',()=>console.log('Vyoium AI live development preview: http://localhost:4321 (auto rebuild + reload)'));
+process.on('SIGINT',()=>{backend.kill();server.close();process.exit();});
