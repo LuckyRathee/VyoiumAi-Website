@@ -14,8 +14,9 @@
   - labelled form fields
   - an enquiry dialog with focus management and Escape to close
   - a reduced-motion fallback and a pause toggle for the particle bust
-  - `aria-hidden` on decorative images
+  - `aria-hidden` on decorative images and the marquee
+  - all animation disabled under `prefers-reduced-motion`; content never depends on animation or JavaScript to become visible
 - **Browser tests cover:** the particle render and pause toggle, every route and asset, horizontal overflow, dialog focus, FAQs, form failure without JavaScript, and reduced motion.
 - **Pending:**
   - a full WCAG 2.2 AA audit (contrast and a screen-reader pass)
-  - a Lighthouse performance budget; `public/assets/head.svg` is about 290 KB and could be optimised
+  - a Lighthouse performance budget; `public/assets/head.svg` is about 320 KB and could be optimised

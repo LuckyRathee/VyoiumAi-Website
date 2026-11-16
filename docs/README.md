@@ -1,4 +1,4 @@
-# Vyoium AI Website — Documentation
+# Vyoium AI Website: Documentation
 
 Index of the project documentation. If you are new to the project, start with [OVERVIEW.md](OVERVIEW.md).
 
@@ -7,6 +7,7 @@ Index of the project documentation. If you are new to the project, start with [O
 | [OVERVIEW.md](OVERVIEW.md) | What the website is, who it is for, its principles and design |
 | [STATUS.md](STATUS.md) | Completeness assessment: what is done, partial or not started |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | How the site is built, served and tested |
+| [DESIGN.md](DESIGN.md) | Colour theme, motion rules and the hero figure |
 | [CONTENT.md](CONTENT.md) | Pages, services, content rules and how to edit copy |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Local setup, commands, branching and conventions |
 | [ENQUIRY-BACKEND.md](ENQUIRY-BACKEND.md) | Contact endpoint, SMTP configuration and protections |

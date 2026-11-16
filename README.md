@@ -39,11 +39,11 @@ npm audit
 
 Browser checks require the local preview running and Google Chrome installed. They exercise responsive overflow, dialog focus/Escape, native FAQs, a no-JavaScript enquiry failure and reduced-motion behaviour. Screenshots go into the ignored `artifacts/` directory.
 
-The saved milestone passed **16 automated tests** and the browser suite. SMTP was tested against a **local test SMTP server**, not a real business inbox.
+The saved milestone passed **17 automated tests** and the browser suite. SMTP was tested against a **local test SMTP server**, not a real business inbox.
 
 ## Pages
 
-Home (`/`), services (`/services`), five service detail pages, voice-agent development preview (`/voice-agent`), About, Contact, Privacy and Terms — **12 pages** in total.
+Home (`/`), services (`/services`), five service detail pages, voice-agent development preview (`/voice-agent`), About, Contact, Privacy and Terms: **12 pages** in total.
 
 Service detail routes:
 
@@ -69,7 +69,7 @@ tests/                       Automated and browser checks
 HANDOFF.md                   Milestone, pending work and launch dependencies
 LAUNCH.md                    Launch checklist (production build guard)
 CHANGELOG.md                 Notable changes
-docs/                        Full documentation — start at docs/README.md
+docs/                        Full documentation (start at docs/README.md)
 ```
 
 Full documentation lives in [docs/](docs/README.md).
@@ -118,7 +118,7 @@ Local folder: `D:\GitRepo\VyouimAi-website` (preserve this folder spelling).
 
 ## Hero visual
 
-The home hero shows an original, procedurally generated particle bust: a front-facing head and shoulders made of glowing cyan particles, with floating binary digits behind it. The founder chose this style on 2026-11-16, replacing the earlier three-quarter reference-face direction. Geometry lives in `public/assets/head.js`. Regenerate the static fallback with `node scripts/head-fallback.mjs` after changing the geometry. See [docs/ROADMAP.md](docs/ROADMAP.md) for what is next.
+The home hero shows an original, procedurally generated particle bust: a human head and shoulders built from standard proportions, lit as a 3D form, made of cool white-blue particles that burst outward, with floating binary digits behind it. The founder chose this style on 2026-11-16, replacing the earlier three-quarter reference-face direction. Geometry lives in `public/assets/head.js`. Regenerate the static fallback with `node scripts/head-fallback.mjs` after changing the geometry. See [docs/ROADMAP.md](docs/ROADMAP.md) for what is next.
 
 ## Before public launch
 

@@ -19,7 +19,7 @@ npm run test:browser
 npm audit
 ```
 
-- `npm test` runs the 16 unit and integration tests.
+- `npm test` runs the 17 unit and integration tests.
 - `npm run test:browser` needs the dev server running. It saves screenshots to `artifacts/`. Set `TEST_URL` to test another address, for example `TEST_URL=http://127.0.0.1:4400`.
 
 ## Branching

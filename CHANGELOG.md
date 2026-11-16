@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased (dev)
+- style: final palette from the logo (lime and pink on ink) with a neutral white-blue figure; floating capsule header, lime featured service card, lime call-to-action panel, monospace labels and a tonal band behind services.
+- style: apply the founder's rules: no shifting buttons, no cursor-following effects, no blended gradients, no glyph icons, no em dashes; record the rules in docs/DESIGN.md and the launch gates in LAUNCH.md.
+- style: elevation pass with hairline borders, layered surfaces, rounded corners, a bento services grid with domain visuals, and one 1.5px stroke icon set.
+- feat: rebuild the hero figure with human proportions, 3D lighting, bursting particles, a scan line and pointer response.
+- style: new theme (deep ink, pink for actions, cyan for highlights) and a motion system: entrances, scroll reveals, sticky glass header, scroll progress, card spotlight, marquee band, page transitions.
+- feat: styled enquiry result page; the server now serves the built 404 page.
 - feat: replace the hero head with a procedural cyan particle bust and floating binary digits; regenerate the static fallback.
 - style: two-column content sections, styled lists, hero edge fade, CTA glow, card hover lift; fix the missing space in the CTA heading on mobile.
 - feat: prune expired rate-limit counters automatically; add `.env.example`.

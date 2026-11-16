@@ -51,6 +51,8 @@ export function createServer({ distDir = path.resolve('dist'), dataDir = path.re
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    // The page script probes this path on localhost for dev live reload; 204 tells it to stop.
+    if (req.url === '/__reload') { res.writeHead(204); return res.end(); }
     if (req.url?.split('?')[0] !== '/api/enquiry') {
       if (!['GET','HEAD'].includes(req.method)) { res.writeHead(405); return res.end('Method not allowed'); }
       try {
@@ -64,7 +66,12 @@ export function createServer({ distDir = path.resolve('dist'), dataDir = path.re
         res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
         res.writeHead(200, {'Content-Type':mime[path.extname(file)] || 'application/octet-stream'});
         return res.end(req.method === 'HEAD' ? undefined : data);
-      } catch { res.writeHead(404, {'Content-Type':'text/html; charset=utf-8'}); return res.end('<h1>Page not found</h1><a href="/">Home</a>'); }
+      } catch {
+        let page = '<h1>Page not found</h1><a href="/">Home</a>';
+        try { page = await readFile(path.join(distDir, '404.html'), 'utf8'); } catch { /* built 404 page is optional */ }
+        res.writeHead(404, {'Content-Type':'text/html; charset=utf-8'});
+        return res.end(req.method === 'HEAD' ? undefined : page);
+      }
     }
     if(req.method !== 'POST') { res.writeHead(405, {'Allow':'POST'}); return res.end('Method not allowed'); }
     try {

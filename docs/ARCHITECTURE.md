@@ -43,8 +43,19 @@ The server reports success only if SMTP accepted the configured recipient.
 | `tests/site.test.mjs` | Generated pages and metadata |
 | `tests/server.test.mjs` | Static serving, headers, rate limiting and counter pruning |
 | `tests/enquiry.test.mjs` | Validation, SMTP behaviour, rate limiting and error states |
-| `tests/head.test.mjs` | Particle bust geometry: size, determinism, silhouette regions |
+| `tests/head.test.mjs` | Particle bust: human proportions, smooth outline, determinism, particle counts |
 | `tests/browser.mjs` | Playwright: particle render and pause, all routes and assets, overflow, dialog, FAQs, no-JS form and reduced motion |
 
 ## Hero particle bust
-`head.js` defines `bustInside(x, y)` (a stylised head, ears, neck and sloping shoulders) and `createBustPoints(small)`, which samples a seeded point cloud inside it. Points near the outline are denser and brighter, so the form reads as a glowing shell. `app.js` draws the points on the canvas with additive blending, a pre-rendered glow sprite and gentle twinkle and sway, plus floating binary digits. It runs at about 30 fps, pauses when off-screen or when the tab is hidden, and stops entirely with reduced motion. Mobile uses fewer points. After changing the geometry, run `node scripts/head-fallback.mjs` to regenerate `head.svg`.
+`head.js` exposes `BUST` and `createBustPoints(small)`:
+
+1. **Outline.** A smooth curve through anatomical landmarks (crown, temple, ear, jaw, neck, trapezius, deltoid) in head-height units gives the silhouette. `BUST.halfWidth(y)` and `BUST.inside(x, y)` query it.
+2. **Depth field.** `BUST.depth(x, y)` combines a head ellipsoid with gentle facial relief, a neck and a chest, blended smoothly. Surface normals from it drive a key light and a rim light (`BUST.shade`).
+3. **Particles.** Points are sampled with density proportional to the lighting, plus a traced outline and a set of burst particles that carry a direction, distance and speed.
+
+`app.js` flattens the points into typed arrays, groups them into brightness buckets and draws them with additive blending at about 30 fps. The figure holds a slight three-quarter turn and sways a few degrees. Nothing follows the cursor. Burst particles travel outward, fade and re-form. A scan line passes down the figure. Rendering pauses off-screen, in a hidden tab, or when paused, and stops with reduced motion. Mobile uses fewer points.
+
+The geometry is a stylised relief, not a scanned or modelled human. After changing it, run `node scripts/head-fallback.mjs` to regenerate `head.svg` with the same projection.
+
+## Motion system
+The end of `app.js` adds a scroll progress bar, the header's scrolled state, and scroll reveals (an `IntersectionObserver` adds `.in` to `.reveal` elements). Reveals only hide content after JavaScript adds `.motion` to `<html>`, so pages stay fully visible without JavaScript. See [DESIGN.md](DESIGN.md) for the rules.
