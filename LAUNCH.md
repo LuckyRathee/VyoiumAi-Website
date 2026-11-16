@@ -15,7 +15,7 @@
 ## Infrastructure
 - [ ] Domain, hosting and TLS/HSTS
 - [ ] SMTP credentials and `ENQUIRY_TO` configured, and **receipt in the real inbox verified**
-- [ ] Proxy-aware client IP and rate-limit storage cleanup
+- [ ] Proxy-aware client IP (expired counters are already pruned)
 
 ## Verification
 - [ ] Accessibility, performance, schema, route and no-JavaScript audits

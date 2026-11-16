@@ -13,9 +13,9 @@
   - semantic landmarks and native `<details>` FAQs
   - labelled form fields
   - an enquiry dialog with focus management and Escape to close
-  - a reduced-motion fallback and a motion toggle for the particle head
+  - a reduced-motion fallback and a pause toggle for the particle bust
   - `aria-hidden` on decorative images
-- **Browser tests cover:** horizontal overflow, dialog focus, FAQs, form failure without JavaScript, and reduced motion.
+- **Browser tests cover:** the particle render and pause toggle, every route and asset, horizontal overflow, dialog focus, FAQs, form failure without JavaScript, and reduced motion.
 - **Pending:**
   - a full WCAG 2.2 AA audit (contrast and a screen-reader pass)
-  - a Lighthouse performance budget; `public/assets/head.svg` is several hundred KB and should be optimised
+  - a Lighthouse performance budget; `public/assets/head.svg` is about 290 KB and could be optimised

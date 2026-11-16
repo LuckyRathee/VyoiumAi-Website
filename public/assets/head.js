@@ -1,33 +1,66 @@
-function createHeadPoints(small) {
- const points=[];let seed=47;
- const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
- const gauss=(v,c,w)=>Math.exp(-Math.pow((v-c)/w,2));
- const width=y=>Math.sqrt(Math.max(0,1-y*y))*(y<-.25?.59+.15*(y+.25):.65);
- const depth=(x,y)=>{
-  const w=width(y);const front=Math.sqrt(Math.max(0,1-(x/w)**2))*.47;
-  const nose=.24*gauss(x,0,.065)*gauss(y,-.06,.29)+.14*gauss(x,0,.10)*gauss(y,-.23,.075);
-  const sockets=-.10*(gauss(x,.23,.13)+gauss(x,-.23,.13))*gauss(y,.16,.095);
-  const brows=.055*(gauss(x,.24,.17)+gauss(x,-.24,.17))*gauss(y,.29,.05);
-  const cheeks=.08*(gauss(x,.36,.12)+gauss(x,-.36,.12))*gauss(y,-.10,.16);
-  const mouth=-.035*gauss(x,0,.21)*gauss(y,-.43,.035)+.05*gauss(x,0,.20)*gauss(y,-.47,.065);
-  const chin=.055*gauss(x,0,.23)*gauss(y,-.69,.16);
-  return front+nose+sockets+brows+cheeks+mouth+chin;
- };
- const add=(x,y,z,feature='',size)=>points.push({x,y,z,feature,color:feature==='eyes'||feature==='lips'?'#f4ede8':random()<.24?'#ff2dab':'#bdb9b5',size:size||(.5+random()*.7)});
- const rows=small?65:104,cols=small?65:104;
- for(let j=0;j<rows;j++){const y=-.96+j/(rows-1)*1.94;const w=width(y);for(let i=0;i<cols;i++){const x=-w+i/(cols-1)*2*w;if(random()<.12)continue;const eye=(Math.abs(x-.23)<.11||Math.abs(x+.23)<.11)&&Math.abs(y-.16)<.048; if(eye&&random()<.83)continue;const xx=x+(random()-.5)*.006,yy=y+(random()-.5)*.006;add(xx,yy,depth(xx,yy));}}
- // Sparse back of skull preserves a three-dimensional silhouette without washing out the face.
- for(let i=0;i<(small?350:900);i++){const y=-.92+random()*1.9;const phi=Math.PI+random()*Math.PI;const x=width(y)*Math.cos(phi);add(x,y,-Math.sqrt(Math.max(0,1-y*y))*.44*Math.abs(Math.sin(phi)),'back',.55);}
- const contour=(feature,fn,n=180)=>{for(let i=0;i<n;i++){const [x,y]=fn(i/(n-1));add(x,y,depth(x,y)+.012,feature,.8+random()*.35);}};
- for(const side of [-1,1]){
-  contour('eyes',t=>{const a=t*Math.PI*2;return [side*.23+Math.cos(a)*.112,.16+Math.sin(a)*.044];});
-  contour('brows',t=>[side*(.105+t*.245),.27+Math.sin(t*Math.PI)*.025],100);
-  contour('nose',t=>[side*(.035+.065*Math.pow(t,3)),.23-t*.50],110);
-  contour('nose',t=>[side*(.04+t*.09),-.26-Math.sin(t*Math.PI)*.035],80);
-  contour('jaw',t=>{const y=.27-t*1.17;return [side*width(y)*.97,y];},200);
+// Procedural particle bust (head, neck and shoulders), front-facing.
+// Original geometry: a seeded point cloud sampled inside a stylised silhouette,
+// brighter near the outline to give a glowing rim. Shared by the live canvas
+// (app.js), the static SVG fallback (scripts/head-fallback.mjs) and tests.
+function bustInside(x, y) {
+ // Head: slightly egg-shaped ellipse, narrower at the jaw.
+ const hy = (y - .49) / .35;
+ const hx = x / (hy < 0 ? .25 + .035 * (1 + hy) : .285);
+ if (hx * hx + hy * hy <= 1) return true;
+ // Ears: small bumps at eye height.
+ if (Math.abs(y - .47) < .07 && Math.abs(x) < .32 && Math.abs(x) > .22) return ((Math.abs(x) - .28) / .04) ** 2 + ((y - .47) / .07) ** 2 <= 1;
+ // Neck.
+ if (y <= .2 && y >= -.02 && Math.abs(x) <= .13) return true;
+ // Shoulders: a sloping trapezius line from the neck, rounding over the shoulder.
+ const ax = Math.abs(x);
+ let top;
+ if (ax < .13) top = .2;
+ else if (ax < .5) top = .06 - (ax - .13) * .38;
+ else if (ax < .7) top = -.08 - .22 * (1 - Math.sqrt(Math.max(0, 1 - ((ax - .5) / .2) ** 2)));
+ else if (ax < .76 && y < -.42) top = -.42;
+ else top = -2;
+ if (y < top && y > -1) return true;
+ return false;
+}
+
+function createBustPoints(small) {
+ let seed = 91;
+ const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+ const target = small ? 3400 : 7000;
+ const points = [];
+ const rays = [[1,0],[-1,0],[0,1],[0,-1],[.7,.7],[-.7,.7],[.7,-.7],[-.7,-.7]];
+ // Distance to the outline, coarsely estimated by probing outward rays.
+ const edge = (x, y) => { for (const d of [.012, .025, .045, .075]) for (const [dx, dy] of rays) if (!bustInside(x + dx * d, y + dy * d)) return d; return .1; };
+ let guard = 0;
+ while (points.length < target && guard++ < target * 40) {
+  const x = (random() - .5) * 1.9, y = -1 + random() * 1.82;
+  if (!bustInside(x, y)) continue;
+  const d = edge(x, y);
+  const rim = d <= .012 ? 1 : d <= .025 ? .75 : d <= .045 ? .45 : d <= .075 ? .25 : .12;
+  // Keep interiors sparser than outlines so the form reads as a glowing shell.
+  if (random() > .5 + rim * .6) continue;
+  // Fade the torso out towards the bottom of the frame.
+  const fade = y < -.45 ? Math.max(0, 1 - (-.45 - y) / .55) : 1;
+  if (random() > fade) continue;
+  // The head carries the likeness, so give it more density than the torso.
+  if (y < .14 && random() > .5) continue;
+  // Soft facial cues: darker eye band, brighter brow, nose and mouth hints.
+  let face = 0;
+  if (Math.abs(x) < .22 && y > .2 && y < .75) {
+   if (Math.abs(y - .5) < .035 && Math.abs(Math.abs(x) - .1) < .055) { if (random() < .6) continue; face = -.2; }
+   if (Math.abs(x) < .025 && y > .36 && y < .5) face = .25;
+   if (Math.abs(y - .33) < .012 && Math.abs(x) < .07) face = .2;
+  }
+  const z = Math.sqrt(Math.max(0, 1 - (x / .8) ** 2)) * (y > .14 ? .6 : .35);
+  points.push({ x, y, z, bright: Math.min(1, .42 + rim * .6 + face + random() * .25), size: .5 + random() * (rim > .5 ? 1.1 : .7), phase: random() * Math.PI * 2 });
  }
- contour('lips',t=>{const x=(t-.5)*.38;return [x,-.425+Math.abs(x)*.14-.018*gauss(x,0,.04)];});
- contour('lips',t=>{const x=(t-.5)*.38;return [x,-.445-.036*Math.sin(t*Math.PI)];});
- contour('jaw',t=>[(t-.5)*.37,-.82-.06*Math.sin(t*Math.PI)],100);
+ // A sparse halo of drifting dust just outside the outline.
+ for (let i = 0; i < (small ? 160 : 360); i++) {
+  const x = (random() - .5) * 1.9, y = -.6 + random() * 1.45;
+  if (bustInside(x, y) || !rays.some(([dx, dy]) => bustInside(x + dx * .07, y + dy * .07))) continue;
+  points.push({ x, y, z: 0, bright: .15 + random() * .35, size: .4 + random() * .5, phase: random() * Math.PI * 2, dust: true });
+ }
  return points;
 }
+
+if (typeof globalThis !== 'undefined') { globalThis.createBustPoints = createBustPoints; globalThis.bustInside = bustInside; }

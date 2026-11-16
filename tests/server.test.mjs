@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createServer} from '../server.mjs';
-import {mkdtemp,writeFile,mkdir,rm} from 'node:fs/promises';
+import {createServer,pruneRateLimits} from '../server.mjs';
+import {mkdtemp,writeFile,mkdir,rm,readdir} from 'node:fs/promises';
 import path from 'node:path';
 async function fixture(t){const dir=await mkdtemp(path.join(process.env.TMPDIR,'vyoium-static-'));await mkdir(path.join(dir,'dist'));await writeFile(path.join(dir,'dist/index.html'),'<h1>Vyoium AI</h1>');const server=createServer({distDir:path.join(dir,'dist'),dataDir:path.join(dir,'data'),env:{}});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});return {base:`http://127.0.0.1:${server.address().port}`,dir};}
 test('production server serves HTML and actual 404 without treating GET as enquiry',async t=>{const f=await fixture(t);const r=await fetch(f.base);assert.equal(r.status,200);assert.match(await r.text(),/Vyoium AI/);assert.equal((await fetch(f.base+'/missing')).status,404);assert.equal((await fetch(f.base+'/server.mjs')).status,404);assert.equal(r.headers.get('x-content-type-options'),'nosniff');});
 test('repeated enquiries are rate limited using persisted counters',async t=>{const f=await fixture(t);let r;for(let i=0;i<7;i++)r=await fetch(f.base+'/api/enquiry',{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json','X-Forwarded-For':`192.0.2.${i}`},body:JSON.stringify({name:'Test',email:'test@example.com',message:'Actual local test'})});assert.equal(r.status,429);assert.ok(Number(r.headers.get('retry-after'))>0);});
+
+test('expired rate-limit counters are pruned and fresh ones kept',async t=>{const dir=await mkdtemp(path.join(process.env.TMPDIR,'vyoium-prune-'));t.after(()=>rm(dir,{recursive:true,force:true}));const old='a'.repeat(64)+'.json',fresh='b'.repeat(64)+'.json',bad='c'.repeat(64)+'.json';await writeFile(path.join(dir,old),JSON.stringify({start:Date.now()-700000,count:3}));await writeFile(path.join(dir,fresh),JSON.stringify({start:Date.now(),count:1}));await writeFile(path.join(dir,bad),'not json');await writeFile(path.join(dir,'keep.txt'),'x');assert.equal(await pruneRateLimits(dir),2);assert.deepEqual((await readdir(dir)).sort(),[fresh,'keep.txt'].sort());});

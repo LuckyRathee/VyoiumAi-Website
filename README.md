@@ -39,7 +39,7 @@ npm audit
 
 Browser checks require the local preview running and Google Chrome installed. They exercise responsive overflow, dialog focus/Escape, native FAQs, a no-JavaScript enquiry failure and reduced-motion behaviour. Screenshots go into the ignored `artifacts/` directory.
 
-The saved milestone passed **15 automated tests** and the browser suite. SMTP was tested against a **local test SMTP server**, not a real business inbox.
+The saved milestone passed **16 automated tests** and the browser suite. SMTP was tested against a **local test SMTP server**, not a real business inbox.
 
 ## Pages
 
@@ -116,9 +116,9 @@ GitHub: https://github.com/LuckyRathee/VyoiumAi-Website
 
 Local folder: `D:\GitRepo\VyouimAi-website` (preserve this folder spelling).
 
-## Next milestone
+## Hero visual
 
-Build a **rendered particle face closely matching the supplied monochrome three-quarter reference**, not a pasted image. This is unfinished. Draft work is preserved outside the repository; see [HANDOFF.md](HANDOFF.md) for its location and continuation notes. The website currently retains the verified procedural head.
+The home hero shows an original, procedurally generated particle bust: a front-facing head and shoulders made of glowing cyan particles, with floating binary digits behind it. The founder chose this style on 2026-11-16, replacing the earlier three-quarter reference-face direction. Geometry lives in `public/assets/head.js`. Regenerate the static fallback with `node scripts/head-fallback.mjs` after changing the geometry. See [docs/ROADMAP.md](docs/ROADMAP.md) for what is next.
 
 ## Before public launch
 

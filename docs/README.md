@@ -13,7 +13,7 @@ Index of the project documentation. If you are new to the project, start with [O
 | [DEPLOYMENT.md](DEPLOYMENT.md) | Hosting requirements and release procedure |
 | [SECURITY.md](SECURITY.md) | Security controls and known gaps |
 | [SEO-AND-ACCESSIBILITY.md](SEO-AND-ACCESSIBILITY.md) | Metadata, structured data, crawler policy and accessibility |
-| [ROADMAP.md](ROADMAP.md) | Next milestones, including the reference particle face |
+| [ROADMAP.md](ROADMAP.md) | Next milestones and follow-ups |
 | [../LAUNCH.md](../LAUNCH.md) | Launch checklist (the build blocks `--production` until it is complete) |
 | [../HANDOFF.md](../HANDOFF.md) | Working agreement and session handoff notes |
 | [../CHANGELOG.md](../CHANGELOG.md) | Notable changes |

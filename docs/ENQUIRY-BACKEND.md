@@ -5,7 +5,7 @@
 ## Fields and limits
 | Field | Max chars | Required |
 | --- | --- | --- |
-| `name` | 120 (single line) | yes |
+| `name` | 120 on the server; the form allows 100 (single line) | yes |
 | `email` | 254 | yes |
 | `message` | 5000 | yes |
 | `source` | 500 (the page path, set by JavaScript) | no |
@@ -37,7 +37,7 @@ If the request sends `Accept: application/json`, the response is JSON: `{ ok, me
 | `PORT` / `HOST` | Default `4321` / `127.0.0.1` |
 | `RATE_LIMIT` | Default 6 attempts per 10 minutes per address |
 
-The server does not load `.env` automatically. Use Node's env-file flag with a git-ignored file:
+The server does not load `.env` automatically. Copy [`.env.example`](../.env.example) to `.env.local` (git-ignored) and start with:
 
 ```bash
 node --env-file=.env.local server.mjs
@@ -46,4 +46,4 @@ node --env-file=.env.local server.mjs
 ## Caveats
 - SMTP acceptance does not prove that a person received the email. Verify receipt in the real inbox before launch.
 - Behind a reverse proxy, the socket address belongs to the proxy, so all visitors share one rate limit. Add trusted-proxy handling once hosting is known.
-- Counter files in `.data/` are never purged. Add retention cleanup.
+- Expired counter files in `.data/` are pruned automatically, at most once per ten-minute window (`pruneRateLimits` in `server.mjs`).

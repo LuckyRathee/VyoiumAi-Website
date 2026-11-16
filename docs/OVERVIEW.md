@@ -22,7 +22,7 @@ It targets established small and medium businesses that have a repeatable workfl
 `/`, `/services`, `/services/ai-agents`, `/services/automation-integrations`, `/services/websites`, `/services/ai-consulting`, `/services/managed-support`, `/voice-agent`, `/about`, `/contact`, `/privacy`, `/terms`, plus a generated `404.html`.
 
 ## Design
-The site uses a dark theme with pink and chartreuse accents and the supplied VAi logo. The hero has a procedural Canvas particle head with a static SVG fallback, reduced-motion support and a motion toggle.
+The site uses a dark theme with pink and chartreuse accents and the supplied VAi logo. The hero shows an original, procedurally generated particle bust: glowing cyan particles forming a head and shoulders, with floating binary digits. It has a static SVG fallback, reduced-motion support and a pause toggle. Content sections use a two-column layout on desktop.
 
 ## Stack
 Node.js 22+, ES modules, generated static HTML (`scripts/build.mjs`), plain CSS and JavaScript, a Node HTTP server, Nodemailer and Playwright. There is no frontend framework.

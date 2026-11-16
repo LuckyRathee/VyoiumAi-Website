@@ -3,8 +3,8 @@
 ```text
 src/content.mjs            Service and FAQ data (the single source of service copy)
 scripts/build.mjs          Generates dist/: page HTML, sitemap.xml, robots.txt, 404.html and JSON-LD
-scripts/head-fallback.mjs  Generates the static particle-head fallback
-public/assets/             styles.css; app.js (dialog, form, live reload, particle head); head.js; head.svg; logos
+scripts/head-fallback.mjs  Regenerates head.svg from the bust geometry (run manually)
+public/assets/             styles.css; app.js (dialog, form, live reload, canvas renderer); head.js (bust geometry); head.svg (static fallback); logos
 lib/enquiry.mjs            Field validation, SMTP configuration and HTML response rendering
 server.mjs                 Static file server, POST /api/enquiry and security headers
 dev.mjs                    Watch/rebuild/live-reload server on 4321; proxies the API to 4322
@@ -41,7 +41,10 @@ The server reports success only if SMTP accepted the configured recipient.
 | File | Covers |
 | --- | --- |
 | `tests/site.test.mjs` | Generated pages and metadata |
-| `tests/server.test.mjs` | Static serving and headers |
+| `tests/server.test.mjs` | Static serving, headers, rate limiting and counter pruning |
 | `tests/enquiry.test.mjs` | Validation, SMTP behaviour, rate limiting and error states |
-| `tests/head.test.mjs` | Particle geometry (eyes, nose, lips, jaw contours) |
-| `tests/browser.mjs` | Playwright: overflow, dialog, FAQs, no-JS form and reduced motion |
+| `tests/head.test.mjs` | Particle bust geometry: size, determinism, silhouette regions |
+| `tests/browser.mjs` | Playwright: particle render and pause, all routes and assets, overflow, dialog, FAQs, no-JS form and reduced motion |
+
+## Hero particle bust
+`head.js` defines `bustInside(x, y)` (a stylised head, ears, neck and sloping shoulders) and `createBustPoints(small)`, which samples a seeded point cloud inside it. Points near the outline are denser and brighter, so the form reads as a glowing shell. `app.js` draws the points on the canvas with additive blending, a pre-rendered glow sprite and gentle twinkle and sway, plus floating binary digits. It runs at about 30 fps, pauses when off-screen or when the tab is hidden, and stops entirely with reduced motion. Mobile uses fewer points. After changing the geometry, run `node scripts/head-fallback.mjs` to regenerate `head.svg`.

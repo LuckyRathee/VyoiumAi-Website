@@ -14,7 +14,6 @@
 ## Known gaps
 - No HSTS yet; it needs HTTPS hosting.
 - The rate limiter keys on the socket address, which is not proxy-aware.
-- Rate-limit files are never cleaned up.
 - There is no CSRF token. Origin checks mitigate this, and the form has no authenticated session.
 - Run `npm audit` before each release.
 

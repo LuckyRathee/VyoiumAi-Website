@@ -5,7 +5,7 @@
 ## Requirements
 - Either a Node.js 22+ process running `server.mjs`, or static `dist/` hosting that proxies `/api/enquiry` to such a process.
 - HTTPS with HSTS at the edge.
-- Server-side environment variables (see [ENQUIRY-BACKEND.md](ENQUIRY-BACKEND.md)) and a persistent, writable `.data/` directory.
+- Server-side environment variables (template: [`.env.example`](../.env.example); details: [ENQUIRY-BACKEND.md](ENQUIRY-BACKEND.md)) and a persistent, writable `.data/` directory.
 - `SITE_URL` set to the canonical origin at build time.
 
 ## Release procedure

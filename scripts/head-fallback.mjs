@@ -1,7 +1,12 @@
+// Regenerates public/assets/head.svg, the static fallback shown with reduced
+// motion, without JavaScript, and before the canvas renders. Run manually:
+//   node scripts/head-fallback.mjs
 import {readFileSync,writeFileSync} from 'node:fs';
 import vm from 'node:vm';
 const scope={};vm.runInNewContext(readFileSync('public/assets/head.js','utf8'),scope);
-const angle=-.16,scale=300;
-const circles=scope.createHeadPoints(true).map(p=>{const x=p.x*Math.cos(angle)+p.z*Math.sin(angle);const z=p.z*Math.cos(angle)-p.x*Math.sin(angle);const k=1+z*.14;return `<circle cx="${(325+x*scale*k).toFixed(2)}" cy="${(340-p.y*scale*k).toFixed(2)}" r="${(p.size*k).toFixed(2)}" fill="${p.color}" opacity="${p.feature==='back'?.1:.8}"/>`;}).join('');
-writeFileSync('public/assets/head.svg',`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 720">${circles}</svg>`);
-console.log('Static fallback regenerated from defined facial geometry.');
+const W=650,H=720,scale=290,cx=W*.52,cy=H*.36;
+let seed=7;const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+const digits=Array.from({length:40},()=>`<text x="${(rnd()*W).toFixed(0)}" y="${(rnd()*H).toFixed(0)}" font-size="${(8+rnd()*9).toFixed(0)}" fill-opacity="${(.1+rnd()*.25).toFixed(2)}">${rnd()<.5?0:1}</text>`).join('');
+const dots=scope.createBustPoints(true).filter(p=>!p.dust).map(p=>{const s=(p.size*1.1).toFixed(1);return `<rect x="${(cx+p.x*scale).toFixed(1)}" y="${(cy-(p.y-.5)*scale).toFixed(1)}" width="${s}" height="${s}" fill="${p.bright>.8?'#e9fbff':'#7fdcff'}" fill-opacity="${Math.min(1,p.bright).toFixed(2)}"/>`;}).join('');
+writeFileSync('public/assets/head.svg',`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"><defs><radialGradient id="a"><stop offset="0" stop-color="#28aaff" stop-opacity=".18"/><stop offset="1" stop-color="#28aaff" stop-opacity="0"/></radialGradient></defs><circle cx="${cx}" cy="${cy+scale*.15}" r="${scale}" fill="url(#a)"/><g font-family="monospace" fill="#6ed7ff" text-anchor="middle">${digits}</g>${dots}</svg>`);
+console.log('Static fallback regenerated from the particle bust geometry.');

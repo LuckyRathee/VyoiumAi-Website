@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, stat } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, stat, readdir, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import http from 'node:http';
 import path from 'node:path';
@@ -6,6 +6,23 @@ import { fileURLToPath } from 'node:url';
 import { validateFields, mailTransport, responseHtml } from './lib/enquiry.mjs';
 
 const BODY_LIMIT = 32768;
+const WINDOW = 600000;
+
+// Removes rate-limit counters whose ten-minute window has expired, so .data/ stays bounded.
+export async function pruneRateLimits(dataDir, now = Date.now()) {
+  let removed = 0;
+  let names = [];
+  try { names = await readdir(dataDir); } catch { return 0; }
+  for (const name of names) {
+    if (!/^[0-9a-f]{64}\.json$/.test(name)) continue;
+    const file = path.join(dataDir, name);
+    try {
+      const counter = JSON.parse(await readFile(file, 'utf8'));
+      if (!(now - counter.start < WINDOW)) { await rm(file, { force: true }); removed++; }
+    } catch { await rm(file, { force: true }); removed++; }
+  }
+  return removed;
+}
 const UNAVAILABLE = 'Enquiry delivery is not configured or unavailable. Please try again later.';
 const SUCCESS = "Thanks. Your enquiry has been sent. We'll contact you using the email you provided.";
 
@@ -28,6 +45,7 @@ function sameOrigin(req, env) {
 export function createServer({ distDir = path.resolve('dist'), dataDir = path.resolve('.data'), env = process.env, transport } = {}) {
   transport = mailTransport(env, transport);
   let rateQueue = Promise.resolve();
+  let lastPrune = 0;
   return http.createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -52,11 +70,12 @@ export function createServer({ distDir = path.resolve('dist'), dataDir = path.re
     try {
       const consume = async () => {
         await mkdir(dataDir, {recursive:true});
+        if (Date.now() - lastPrune >= WINDOW) { lastPrune = Date.now(); await pruneRateLimits(dataDir); }
         const key = createHash('sha256').update(req.socket.remoteAddress || 'unknown').digest('hex');
         const file = path.join(dataDir, key + '.json');
         let counter;
         try { counter = JSON.parse(await readFile(file, 'utf8')); } catch { counter = {start:Date.now(),count:0}; }
-        if(Date.now()-counter.start >= 600000) counter = {start:Date.now(),count:0};
+        if(Date.now()-counter.start >= WINDOW) counter = {start:Date.now(),count:0};
         counter.count++;
         await writeFile(file, JSON.stringify(counter));
         return counter.count > Number(env.RATE_LIMIT || 6);
