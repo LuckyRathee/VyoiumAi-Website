@@ -67,7 +67,12 @@ server.mjs                   Static server and enquiry endpoint
 dev.mjs                      Local rebuild/reload server and backend proxy
 tests/                       Automated and browser checks
 HANDOFF.md                   Milestone, pending work and launch dependencies
+LAUNCH.md                    Launch checklist (production build guard)
+CHANGELOG.md                 Notable changes
+docs/                        Full documentation — start at docs/README.md
 ```
+
+Full documentation lives in [docs/](docs/README.md).
 
 Generated output (`dist/`), dependencies, `.data/`, environment secrets, logs and screenshots are ignored by Git.
 
