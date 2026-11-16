@@ -85,3 +85,13 @@ Set by the founder on 2026-11-16. They apply to every future change.
 - a "made with AI" tag or badge anywhere on the site
 
 **Launch gates** are listed in [../LAUNCH.md](../LAUNCH.md).
+
+## Readability and touch
+- No text below 12px. Body copy is 14 to 17px.
+- Links and buttons are at least 32px tall; primary navigation and buttons are at least 44px. Inline links inside a sentence are exempt.
+- Focus rings are lime on dark surfaces and ink on lime surfaces. Every focusable element must show one.
+- Sticky section headings sit 112px from the top so they clear the capsule header.
+- On tablets (701 to 1000px) the hero figure sits behind the text at 55% opacity. On phones it sits below the text at full strength.
+- The "Pause animation" button pauses both the figure and the marquee.
+
+How each of these was found is recorded in [AUDIT.md](AUDIT.md).

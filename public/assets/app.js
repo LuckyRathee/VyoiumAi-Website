@@ -37,7 +37,7 @@ const draw=time=>{const t=time/1000;yaw=-.12+.07*Math.sin(t*.22);project();
  context.globalAlpha=1;context.globalCompositeOperation='source-over';};
 const tick=time=>{frame=0;if(paused||!visible||document.hidden||reduced.matches)return;if(time-last>32){draw(time);last=time;}frame=requestAnimationFrame(tick);};
 const sync=()=>{cancelAnimationFrame(frame);frame=0;toggle.hidden=reduced.matches;art.classList.toggle('rendered',!reduced.matches);if(!reduced.matches){draw(performance.now());frame=requestAnimationFrame(tick);}};
-if(context){resize();canvas.dataset.particleCount=String(n);toggle.addEventListener('click',()=>{paused=!paused;toggle.textContent=paused?'Resume animation':'Pause animation';toggle.setAttribute('aria-pressed',String(paused));sync();});new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();}).observe(art);addEventListener('resize',()=>{resize();sync();});document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync);sync();}}
+if(context){resize();canvas.dataset.particleCount=String(n);toggle.addEventListener('click',()=>{paused=!paused;toggle.textContent=paused?'Resume animation':'Pause animation';toggle.setAttribute('aria-pressed',String(paused));document.documentElement.classList.toggle('paused',paused);sync();});new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();}).observe(art);addEventListener('resize',()=>{resize();sync();});document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync);sync();}}
 
 // Motion system: scroll progress, header state and scroll reveals. Nothing follows the cursor.
 {const root=document.documentElement,header=document.querySelector('.site-header');

@@ -7,7 +7,8 @@
     "build": "node scripts/build.mjs",
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "test:browser": "node tests/browser.mjs"
+    "test:browser": "node tests/browser.mjs",
+    "audit": "node tests/audit.mjs"
   },
   "dependencies": {
     "nodemailer": "^10.5.0"

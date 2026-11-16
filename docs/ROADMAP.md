@@ -5,6 +5,7 @@
 - Design system: lime and pink on ink, capsule header, lime colour blocks and a restrained motion system across all pages.
 - Visual polish: two-column content sections, styled lists and refined hero and CTA backgrounds.
 - `.env.example` and automatic pruning of expired rate-limit counters.
+- Three build, audit and refine rounds, recorded in [AUDIT.md](AUDIT.md), with a repeatable `npm run audit`.
 
 ## Possible design refinements
 - Self-host a web font (for example Inter) if the system font stack is not distinctive enough.

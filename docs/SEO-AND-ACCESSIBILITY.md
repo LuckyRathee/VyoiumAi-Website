@@ -15,6 +15,8 @@
   - an enquiry dialog with focus management and Escape to close
   - a reduced-motion fallback and a pause toggle for the particle bust
   - `aria-hidden` on decorative images and the marquee
+  - a 12px minimum text size, tap targets of at least 32px, and visible focus rings on dark and lime surfaces
+  - the "Pause animation" button stops the figure and the marquee
   - all animation disabled under `prefers-reduced-motion`; content never depends on animation or JavaScript to become visible
 - **Browser tests cover:** the particle render and pause toggle, every route and asset, horizontal overflow, dialog focus, FAQs, form failure without JavaScript, and reduced motion.
 - **Pending:**

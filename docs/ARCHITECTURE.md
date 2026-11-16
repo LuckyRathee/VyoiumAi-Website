@@ -8,7 +8,7 @@ public/assets/             styles.css; app.js (dialog, form, live reload, canvas
 lib/enquiry.mjs            Field validation, SMTP configuration and HTML response rendering
 server.mjs                 Static file server, POST /api/enquiry and security headers
 dev.mjs                    Watch/rebuild/live-reload server on 4321; proxies the API to 4322
-tests/                     node:test suites and Playwright browser checks
+tests/                     node:test suites, Playwright browser checks and the visual audit (audit.mjs)
 dist/                      Generated output (git-ignored)
 .data/                     Rate-limit counters (git-ignored)
 ```
@@ -17,7 +17,7 @@ dist/                      Generated output (git-ignored)
 `npm run build` reads `content.mjs` and renders each page template with the shared navigation, footer and call to action. It writes the result to `dist/` and copies `public/assets` into it. `SITE_URL` sets the canonical URLs and the sitemap origin. The `--production` flag deliberately throws an error until launch is approved.
 
 ## Request flow
-The browser requests pages from `server.mjs`, which serves `dist/` with the CSP and other hardening headers.
+The browser requests pages from `server.mjs`, which serves `dist/` with the CSP and other hardening headers. Unknown paths get the built `dist/404.html` with a 404 status. `/__reload` returns 204: the page script probes it on localhost for dev live reload, and 204 tells it to stop outside `dev.mjs`.
 
 The enquiry form posts to `/api/enquiry`, either as a plain HTML form or as a JavaScript `fetch` with JSON. The server then runs these checks in order:
 
@@ -44,6 +44,7 @@ The server reports success only if SMTP accepted the configured recipient.
 | `tests/server.test.mjs` | Static serving, headers, rate limiting and counter pruning |
 | `tests/enquiry.test.mjs` | Validation, SMTP behaviour, rate limiting and error states |
 | `tests/head.test.mjs` | Particle bust: human proportions, smooth outline, determinism, particle counts |
+| `tests/audit.mjs` | Visual and layout audit across every page and width (`npm run audit`) |
 | `tests/browser.mjs` | Playwright: particle render and pause, all routes and assets, overflow, dialog, FAQs, no-JS form and reduced motion |
 
 ## Hero particle bust

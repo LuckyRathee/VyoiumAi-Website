@@ -22,7 +22,7 @@
 | 429 | Rate limit exceeded (`Retry-After: 600`) |
 | 503 | SMTP not configured or failed, or rate-limit storage unavailable |
 
-If the request sends `Accept: application/json`, the response is JSON: `{ ok, message, errors }`. Otherwise it is an HTML page that keeps the entered fields. Responses never expose provider errors.
+If the request sends `Accept: application/json`, the response is JSON: `{ ok, message, errors }`. Otherwise it is an HTML page that keeps the entered fields. That page uses the site stylesheet, header and favicon, and it is marked `noindex`. Responses never expose provider errors.
 
 ## Environment
 | Variable | Purpose / default |

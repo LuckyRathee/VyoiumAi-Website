@@ -14,6 +14,7 @@ Index of the project documentation. If you are new to the project, start with [O
 | [DEPLOYMENT.md](DEPLOYMENT.md) | Hosting requirements and release procedure |
 | [SECURITY.md](SECURITY.md) | Security controls and known gaps |
 | [SEO-AND-ACCESSIBILITY.md](SEO-AND-ACCESSIBILITY.md) | Metadata, structured data, crawler policy and accessibility |
+| [AUDIT.md](AUDIT.md) | The three audit rounds, what they fixed and how to re-run an audit |
 | [ROADMAP.md](ROADMAP.md) | Next milestones and follow-ups |
 | [../LAUNCH.md](../LAUNCH.md) | Launch checklist (the build blocks `--production` until it is complete) |
 | [../HANDOFF.md](../HANDOFF.md) | Working agreement and session handoff notes |

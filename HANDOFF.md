@@ -14,7 +14,7 @@
 - Two-column content sections, styled lists and refined hero/CTA backgrounds.
 - `.env.example`, expired rate-limit counter pruning and a `docs/` documentation set.
 - SMTP enquiry delivery implementation, server validation, honeypot, persisted rate limiting, bounded bodies and honest failure states.
-- `npm run build`, all 17 `npm test` checks and `npm run test:browser` pass.
+- `npm run build`, all 17 `npm test` checks, `npm run test:browser` and `npm run audit` (21 page captures) pass after three audit rounds (docs/AUDIT.md).
 - SMTP integration tested against a local test server only; no real business inbox delivery verified.
 
 ## Hero direction (decided 2026-11-16)

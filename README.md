@@ -34,10 +34,11 @@ It defaults to `127.0.0.1:4321`, serves `dist/`, and handles `POST /api/enquiry`
 ```bash
 npm test
 npm run test:browser
+npm run audit
 npm audit
 ```
 
-Browser checks require the local preview running and Google Chrome installed. They exercise responsive overflow, dialog focus/Escape, native FAQs, a no-JavaScript enquiry failure and reduced-motion behaviour. Screenshots go into the ignored `artifacts/` directory.
+`npm run audit` captures every page at three widths and reports layout faults; see [docs/AUDIT.md](docs/AUDIT.md). Browser checks and the audit require the local preview running and Google Chrome installed. They exercise responsive overflow, dialog focus/Escape, native FAQs, a no-JavaScript enquiry failure and reduced-motion behaviour. Screenshots go into the ignored `artifacts/` directory.
 
 The saved milestone passed **17 automated tests** and the browser suite. SMTP was tested against a **local test SMTP server**, not a real business inbox.
 

@@ -16,10 +16,12 @@ To run the standalone server instead: `npm run build && npm start`. It listens o
 ```bash
 npm test
 npm run test:browser
+npm run audit
 npm audit
 ```
 
 - `npm test` runs the 17 unit and integration tests.
+- `npm run audit` needs a server running. It captures every page at three widths and reports layout faults (see [AUDIT.md](AUDIT.md)). `npm audit` is the separate dependency security check.
 - `npm run test:browser` needs the dev server running. It saves screenshots to `artifacts/`. Set `TEST_URL` to test another address, for example `TEST_URL=http://127.0.0.1:4400`.
 
 ## Branching
